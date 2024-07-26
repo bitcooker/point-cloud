@@ -2,15 +2,22 @@ import React, { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
+import { Noise } from 'noisejs';
 
 const PointCloud = () => {
+  const noise = new Noise(Math.random());
+
+  const valueOfZ = (x, y) => {
+    return noise.perlin2(x * 0.07, y * 0.06) * 10; 
+  };
+
   const points = useMemo(() => {
     const numPoints = 640 * 640;
     const positions = new Float32Array(numPoints * 3);
     for (let i = 0; i < numPoints; i++) {
       const x = (i % 640) - 320;
       const y = Math.floor(i / 640) - 320;
-      const z = 0;
+      const z = valueOfZ(x, y);
       positions.set([x, y, z], i * 3);
     }
     return positions;
